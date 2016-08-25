@@ -12,7 +12,6 @@ def signIn(driver):
 		credentials = json.load(data)
 
 	try:
-		# click the sign-in button
 		signInButtonElement = driver.find_element_by_link_text("Sign-in").click()
 		
 		driver.implicitly_wait(10)
@@ -36,10 +35,6 @@ driver.get("https://www.draftkings.com")
 signIn(driver)
 
 try:
-    # we have to wait for the page to refresh, the last thing that seems to be updated is the title
-    #WebDriverWait(driver, 10).until(EC.title_contains("cheese!"))
-
-    # You should see "cheese! - Google Search"
     print driver.title
 
 finally:
