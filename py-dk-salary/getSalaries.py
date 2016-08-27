@@ -1,41 +1,57 @@
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait # available since 2.4.0
-from selenium.webdriver.support import expected_conditions as EC # available since 2.26.0
+from selenium.webdriver.support.ui import WebDriverWait  # available since 2.4.0
+from selenium.webdriver.support import expected_conditions as EC  # available since 2.26.0
 from selenium.common.exceptions import NoSuchElementException
 
 import json
 
 
-def signIn(driver):
-	with open("dkCredentials.json") as data:
-		credentials = json.load(data)
-
-	try:
-		signInButtonElement = driver.find_element_by_link_text("Sign-in").click()
-		
-		driver.implicitly_wait(10)
-
-		userNameInput = driver.find_element_by_xpath("//input[@name='Username']")
-		print "now executing JS"
-		print userNameInput
-		driver.execute_script('arguments[0].setAttribute("style", "visibility: visible; height: 2px; width: 1px; opacity: 1;")', userNameInput)
-		#driver.execute_script("document.getElementById('parent_id').style.display='none'")
-		#passwordInput = driver.find_element_by_xpath("//form[input/@name = 'Password']").send_keys(credentials["Password"])
-	
-		#submitCredentials = driver.find_element_by_link_text("Sign In").click()
-	except NoSuchElementException:
-		assert 0, "can't find input with name = Username"
+def get_displayed_input(inputElements):
+    for i in inputElements:
+        print i.is_displayed()
+        if i.is_displayed():
+            return i
+        else:
+            continue
 
 
+def sign_in(driver):
+    with open("dkCredentials.json") as data:
+        credentials = json.load(data)
 
-driver = webdriver.Chrome()
-driver.get("https://www.draftkings.com")
+    try:
+        driver.find_element_by_link_text("Sign-in").click()
 
-signIn(driver)
+        #enter username
+        usernameinput = driver.find_elements_by_xpath("(//*[@name='Username'])")
+        displayedusernameinput = get_displayed_input(usernameinput)
+        displayedusernameinput.send_keys(credentials["Username"])
 
-try:
-    print driver.title
+        #enter password
+        passwordinput = driver.find_elements_by_xpath("(//*[@name='Password'])")
+        displayedpasswordinput = get_displayed_input(passwordinput)
 
-finally:
-    driver.quit()
+        displayedpasswordinput.send_keys(credentials["Password"])
+        #click sign in
+        signinbuttoninput = driver.find_elements_by_xpath("(//*[@data-signin-submit='1'])")
+        get_displayed_input(signinbuttoninput).click()
+
+    except NoSuchElementException:
+        assert 0, "can't find displayed element on signin"
+
+
+def main():
+    driver = webdriver.Chrome()
+    driver.get("https://www.draftkings.com")
+    sign_in(driver)
+
+    try:
+        print driver.title
+
+    finally:
+        driver.quit()
+
+
+if __name__ == "__main__":
+    main()
