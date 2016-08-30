@@ -7,4 +7,4 @@ Beginning of a Daily Fantasy Draft roster predictor.
 - some modifications made to code to account for website changes
 
 ## py-dk-salary
-- using Selenium WebDriver to get Salary data link from Draft Kings website.
+- using Selenium WebDriver with ChromeDriver to get Salary data link from Draft Kings website.
